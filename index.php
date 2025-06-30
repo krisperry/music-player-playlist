@@ -76,30 +76,77 @@
                     <span>Loading</span>
                 </div>
                 <div id="player-content">
-                    <!-- Playlist begins-->
-                    <div id="playlist">
-                        <div id="playlist-title">
-                            <h2>PLAYLIST</h2>
-                        </div>
-                        <div id="song-list-container">
-                            <ul id="song-list">
-                                <li><a href="javascript:void(0)" data-file="a_tango.mp3" title="A Tango" class="song-link">A Tango</a>
-                                </li>
-                                <li><a href="javascript:void(0)" data-file="am_solo.mp3" title="Am Solo" class="song-link">Am Solo</a>
-                                </li>
-                                <li><a href="javascript:void(0)" data-file="go_electronic.mp3" title="Go Electronic" class="song-link">Go Electronic</a>
-                                </li>
-                                <li><a href="javascript:void(0)" data-file="hlylmz.mp3" title="Hlylmz" class="song-link">Hlylmz</a>
-                                </li>
-                                <li><a href="javascript:void(0)" data-file="less.mp3" title="Less" class="song-link">Less</a>
-                                </li>
-                                <li><a href="javascript:void(0)" data-file="motion.mp3" title="Motion" class="song-link">Motion</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- Playlist ends -->
+                <!-- Playlist begins-->
+				<?php 
+				/**
+				* http://www.experts-exchange.com/questions/28699216/Populate-listbox-with-filenames-on-webserver-in-PhP-HTML.html
+				* http://php.net/manual/en/class.recursivedirectoryiterator.php#85805
+				* http://php.net/manual/en/class.splfileinfo.php
+				*/
+				error_reporting(E_ALL);
 
+
+				/**
+				* THE DESIRABLE FILE NAME IS IDENTIFIED HERE
+				*/
+				$signals = '.mp3';
+
+
+				/**
+				* THE SEARCHABLE DIRECTORY IS IDENTIFIED HERE
+				*/
+				$path = __DIR__.'/music/';
+
+
+				// THE OPTION STATEMENTS ARE COLLECTED IN AN ARRAY
+				$options = [];
+
+				// COLLECT THE FILE OBJECTS
+				$objs = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
+
+				// ITERATE OVER THE OBJECTS TO FIND THE DESIRABLE FILES
+				$rgx = '#' . preg_quote($signals) . '#';
+				foreach($objs as $path => $obj)
+				{
+					$name = $obj->getFileName();
+					if (preg_match($rgx, $name))
+					{
+						$options[]
+						= '<li><a href="javascript:void(0)" data-file="'
+						. $name
+						. '" title="'
+						. $name
+						. '" class="song-link">'
+						. $name
+						. '</a>
+						</li>';
+					}
+				}
+
+				// GENERATE THE OPTION STATEMENTS
+				$opts = implode(PHP_EOL, $options);
+				// CREATE THE HTML USING HEREDOC NOTATION
+				$html = <<<EOD
+				<div id="playlist">
+					<div id="playlist-title">
+					<h2>Playlist</h2>
+				</div>
+				<div id="song-list-container">
+					<ul id="song-list">
+					$opts
+					</ul>
+					</div>
+				</div>
+
+				EOD;
+
+				// SHOW THE HTML
+				echo $html;
+				?>
+					
+					
+			<!-- Playlist ends -->
+                    
                     <!-- Equalizer begins-->
                     <div id="equalizer">
                         <div id="current-song-title"></div>
