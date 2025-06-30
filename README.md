@@ -3,7 +3,7 @@ Music player with Equalizer in JavaScript: [Live Demo](http://lalwanivikas.githu
 
 The music-player folder has the following folder structure:
 
-* index.html
+* index.php
 * readme.md
 * css (contains css files)
 * js (contains js files)
